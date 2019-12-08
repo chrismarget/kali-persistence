@@ -1,4 +1,4 @@
 #!/bin/sh
-xrandr -s 1440x900
+/usr/bin/xrandr -s 1440x900
 /usr/bin/passwd -l root
-systemctl start ssh
+/usr/bin/systemctl start ssh
