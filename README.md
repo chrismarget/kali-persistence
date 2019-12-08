@@ -21,9 +21,9 @@ With the option selected, the OS looks for filesystems labled "persistence", mou
 ```
 It causes the contents of those 4 directories from the persistence partition to be overlaid onto the live image filesystem.
 
-The two ssh directories are where keys live. They keys are excluded from the git repo. sshd keys will be created here automatically. Copy your public key into /root/.ssh/authorized_keys for access to the VM.
+The two ssh directories are where keys live. They keys are excluded from the git repo. sshd keys will be created here automatically. Copy your public key into `/root/.ssh/authorized_keys` for access to the VM.
 
-The /root/.config/autostart directory contains a file that specifies a script run by Gnome when the Kali desktop starts. The script is at `/root/scripts/startup.sh`. It does 3 things:
+The `/root/.config/autostart` directory contains a file that specifies a script run by Gnome when the Kali desktop starts. The script is at `/root/scripts/startup.sh`. It does 3 things:
 1) resizes the desktop to fit my MacBook screen.
 2) locks the well-known Kali root password.
 3) starts sshd.
