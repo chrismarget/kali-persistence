@@ -1,5 +1,5 @@
 [Desktop Entry]
 Name=startup
-Exec=/root/scripts/startup.sh
+Exec=/home/kali/scripts/startup.sh
 Terminal=false
 Type=Application
