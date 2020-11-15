@@ -11,6 +11,26 @@ I run a Kali live image in Virtualbox on my MacBook. It's specifically a live im
 3) Create a filesystem (I use ext4; don't use VFAT because of permissions/symlinks) on the partition, label the filesystem "persistence"
 4) Copy the contents of this repo into the persistence filesystem.
 
+## How to use it (copy paste edition)
+```
+name="kali-live-persistence"
+iso=~"/iso/kali-linux-2020.3-live-amd64.iso"
+vboxdir=~"/VirtualBox VMs"
+disk="${vboxdir}/${name}/persistence.vdi"
+
+vboxmanage createvm --name $name --ostype Linux_64 --register
+vboxmanage createhd --filename $disk --size 5000
+vboxmanage storagectl $name --name "SATA Controller" --add sata
+vboxmanage storageattach $name --storagectl "SATA Controller" --port 0 --device 0 --type dvddrive --medium $iso
+vboxmanage storageattach $name --storagectl "SATA Controller" --port 1 --device 0 --type hdd --medium $disk
+vboxmanage modifyvm $name --boot1 dvd --boot2 none --boot3 none --boot4 none
+vboxmanage modifyvm $name --memory 4096 --vram 128
+vboxmanage modifyvm $name --cpus 2
+vboxmanage startvm $name
+cat setup_partition.sh | nc -l 5000
+```
+
+
 ## How it works
 On bootup, select "Live USB Persistence" from the Kali boot menu. Note that USB doesn't need to be involved, that's just how the Kali folks imagined you'd be using it.
 
