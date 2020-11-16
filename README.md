@@ -37,8 +37,7 @@ cp ~/.ssh/id_rsa.pub persistence/home/kali/.ssh/authorized_keys
 When the VM starts, choose "Live USB Persistence" from the menu.
 Once it's running, open a terminal and run:
 ```
-nc <macbook ip> 5000 | tar xvf -
-./setup_partition.sh
+nc 10.0.2.2 5000 | bash
 ```
 
 ## How it works
