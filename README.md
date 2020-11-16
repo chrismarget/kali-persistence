@@ -11,35 +11,20 @@ I run a Kali live image in Virtualbox on my MacBook. It's specifically a live im
 3) Create a filesystem (I use ext4; don't use VFAT because of permissions/symlinks) on the partition, label the filesystem "persistence"
 4) Copy the contents of this repo into the persistence filesystem.
 
-## How to use it (copy paste edition)
-On the macbook:
-```
-name="kali-live-persistence"
-iso=~"/iso/kali-linux-2020.3-live-amd64.iso"
-vboxdir=~"/VirtualBox VMs"
-disk="${vboxdir}/${name}/persistence.vdi"
-
-vboxmanage createvm --name $name --ostype Linux_64 --register
-vboxmanage createhd --filename $disk --size 5000
-vboxmanage storagectl $name --name "SATA Controller" --add sata
-vboxmanage storageattach $name --storagectl "SATA Controller" --port 0 --device 0 --type dvddrive --medium $iso
-vboxmanage storageattach $name --storagectl "SATA Controller" --port 1 --device 0 --type hdd --medium $disk
-vboxmanage modifyvm $name --boot1 dvd --boot2 none --boot3 none --boot4 none
-vboxmanage modifyvm $name --memory 4096 --vram 128
-vboxmanage modifyvm $name --cpus 2
-vboxmanage modifyvm $name --graphicscontroller vmsvga
-vboxmanage modifyvm $name --natpf1 "guestssh,tcp,,2222,,22"
-vboxmanage startvm $name
-cp ~/.ssh/id_rsa.pub persistence/home/kali/.ssh/authorized_keys
-(cat setup_partition.sh; tar czf - -C persistence . | base64 -b 80) | nc -l 5000
+## How to use it (VirtualBox)
+On the host, run:
+```sh
+./create-virtualbox-vm.sh
 ```
 
 When the VM starts, choose "Live USB Persistence" from the menu.
-Once it's running, open a terminal and run:
+Once it's running, open a terminal in the VM and run:
+```sh
+nc 10.0.2.2 5000 | bash
 ```
-nc <macbook ip> 5000 | tar xvf -
-./setup_partition.sh
-```
+
+After the VM reboot (and from that point forward), choose "Live USB Persistence"
+from the menu.
 
 ## How it works
 On bootup, select "Live USB Persistence" from the Kali boot menu. Note that USB doesn't need to be involved, that's just how the Kali folks imagined you'd be using it.

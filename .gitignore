@@ -1,2 +1,3 @@
 etc/ssh/*key*
 kali/.ssh/*
+persistence/home/kali/.ssh/
