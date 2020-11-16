@@ -16,7 +16,7 @@ remaining_to_file() {
 }
 
 extract() {
-  base64 --decode $1 $2 | tar -C /tmp/persistence -zxf -
+  base64 --decode $1 | tar -C $2 -zxf -
 }
 
 
@@ -26,5 +26,6 @@ mntpnt=$(mktemp -d)
 mount_disk /dev/sda1 $mntpnt
 
 tmp=$(mktemp)
+echo temp data is $tmp
 
-remaining_to_file $tmp && extract $tmp $mntpnt && sudo chattr +i /tmp/persistence/etc/ssh/sshd_config && sudo reboot
+remaining_to_file $tmp && extract $tmp $mntpnt && sudo chattr +i $mntpnt/etc/ssh/sshd_config && sudo reboot
