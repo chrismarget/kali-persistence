@@ -7,9 +7,8 @@ setup_disk() {
 }
 
 mount_disk() {
-  mkdir -p /tmp/persistence
-  sudo mount -o defaults $1 /tmp/persistence
-  sudo chown kali /tmp/persistence
+  sudo mount -o defaults $1 $2
+  sudo chown kali $2
 }
 
 remaining_to_file() {
@@ -17,11 +16,15 @@ remaining_to_file() {
 }
 
 extract() {
-  base64 --decode $1 | tar -C /tmp/persistence -zxf -
+  base64 --decode $1 $2 | tar -C /tmp/persistence -zxf -
 }
 
 
 setup_disk /dev/sda
-mount_disk /dev/sda1
 
-remaining_to_file $tmp && extract $tmp && sudo chattr +i /tmp/persistence/etc/ssh/sshd_config && sudo reboot
+mntpnt=$(mktemp -d)
+mount_disk /dev/sda1 $mntpnt
+
+tmp=$(mktemp)
+
+remaining_to_file $tmp && extract $tmp $mntpnt && sudo chattr +i /tmp/persistence/etc/ssh/sshd_config && sudo reboot
