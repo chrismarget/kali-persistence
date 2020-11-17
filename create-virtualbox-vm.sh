@@ -26,5 +26,6 @@ vboxmanage modifyvm $name --memory 4096 --vram 128
 vboxmanage modifyvm $name --cpus 2
 vboxmanage modifyvm $name --graphicscontroller vmsvga
 vboxmanage modifyvm $name --natpf1 "guestssh,tcp,,2222,,22"
+vboxmanage setextradata $name "VBoxInternal/Devices/mc146818/0/Config/UseUTC" 1
 vboxmanage startvm $name
 (cat setup-persistence.sh; tar czf - -C persistence . | base64 -b 80) | nc -l 5000
