@@ -11,6 +11,21 @@ I run a Kali live image in Virtualbox on my MacBook. It's specifically a live im
 3) Create a filesystem (I use ext4; don't use VFAT because of permissions/symlinks) on the partition, label the filesystem "persistence"
 4) Copy the contents of this repo into the persistence filesystem.
 
+## How to use it (VirtualBox)
+On the host, run:
+```sh
+./create-virtualbox-vm.sh
+```
+
+When the VM starts, choose "Live USB Persistence" from the menu.
+Once it's running, open a terminal in the VM and run:
+```sh
+nc 10.0.2.2 5000 | bash
+```
+
+After the VM reboot (and from that point forward), choose "Live USB Persistence"
+from the menu.
+
 ## How it works
 On bootup, select "Live USB Persistence" from the Kali boot menu. Note that USB doesn't need to be involved, that's just how the Kali folks imagined you'd be using it.
 
