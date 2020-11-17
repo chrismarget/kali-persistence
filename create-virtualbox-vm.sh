@@ -6,13 +6,16 @@ name="kali-live-persistence"
 iso="${HOME}/iso/kali-linux-2020.3-live-amd64.iso"
 vboxdir="${HOME}/VirtualBox VMs"
 disk="${vboxdir}/${name}/persistence.vdi"
+sshPersistDir="persistence/home/kali/.ssh"
 
-if [ ! -f $iso ]
+if [ ! -f "${iso}" ]
 then
     echo "iso file does not exist at '${iso}'"
     exit 1
 fi
 
+mkdir -p "${sshPersistDir}"
+cp "${HOME}/.ssh/id_rsa.pub" "${sshPersistDir}/authorized_keys"
 vboxmanage createvm --name $name --ostype Linux_64 --register
 vboxmanage createhd --filename "$disk" --size 5000
 vboxmanage storagectl $name --name "SATA Controller" --add sata
@@ -24,5 +27,4 @@ vboxmanage modifyvm $name --cpus 2
 vboxmanage modifyvm $name --graphicscontroller vmsvga
 vboxmanage modifyvm $name --natpf1 "guestssh,tcp,,2222,,22"
 vboxmanage startvm $name
-cp ~/.ssh/id_rsa.pub persistence/home/kali/.ssh/authorized_keys
 (cat setup-persistence.sh; tar czf - -C persistence . | base64 -b 80) | nc -l 5000
