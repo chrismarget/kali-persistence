@@ -3,8 +3,10 @@ Data persistence and personalization of a Kali live image
 
 I run a Kali live image in Virtualbox on my MacBook. It's specifically a live image, rather than an installed copy of of Kali for safety/repeatability reasons. This repo contains the little bits that get it booting directly into a mostly usable state.
 
+"Usable state" in this case means things like: package repo metadata stickiness, trusted ssh keys installed, `sshd` running, a peristent `/home/data/kali` directory, desktop resizing to useful size/resolution, etc...
+
 ## How to use it
-(See the `Tips and Tricks` section for additional help.)
+If your environment matches mine, check out the script below.
 
 1) Create a disk image in virtualbox, attach it to the VM's SATA controller.
 2) Partition the disk image within the VM.
@@ -13,8 +15,8 @@ I run a Kali live image in Virtualbox on my MacBook. It's specifically a live im
 
 ## How to use it (VirtualBox)
 On the host, run:
-```sh
-./create-virtualbox-vm.sh
+```
+sh ./create-virtualbox-vm.sh
 ```
 
 When the VM starts, choose "Live USB Persistence" from the menu.
@@ -29,23 +31,25 @@ from the menu.
 ## How it works
 On bootup, select "Live USB Persistence" from the Kali boot menu. Note that USB doesn't need to be involved, that's just how the Kali folks imagined you'd be using it.
 
-With the option selected, the OS looks for filesystems labled "persistence", mounts them at `/usr/lib/live/mount/persistence/<partition>`. The OS then examines the `persistence.conf` file on the partition and creates bind mounds and symlinks between the live image filesystem and the partition. In this case, the persistence.conf says:
+With the option selected, the OS looks for filesystems labled "persistence", mounts them at `/usr/lib/live/mount/persistence/<partition>`. The OS then examines the `persistence.conf` file on the partition and creates bind mounts and symlinks between the live image filesystem and the partition. In this case, the persistence.conf says:
 ```
 /etc/ssh
-/root/.ssh
-/root/scripts
-/root/.config/autostart
+/home/kali/.config/autostart
+/home/kali/.ssh
+/home/kali/data
+/home/kali/scripts
 ```
 It causes the contents of those 4 directories from the persistence partition to be overlaid onto the live image filesystem.
 
-The two ssh directories are where keys live. They keys are excluded from the git repo. sshd keys will be created here automatically. Copy your public key into `/root/.ssh/authorized_keys` for access to the VM.
+The two ssh directories are where keys live. They keys are excluded from the git repo. sshd keys will be created here automatically. Copy your public key into `/home/kali/.ssh/authorized_keys` for access to the VM (the script does this automatically.)
 
-The `/root/.config/autostart` directory contains a file that specifies a script run by Gnome when the Kali desktop starts. The script is at `/root/scripts/startup.sh`. It does 3 things:
+The `/home/kali/.config/autostart` directory contains a file that specifies a script run by Gnome when the Kali desktop starts. The script is at `/home/kali/scripts/startup.sh`. It does 4 things:
 1) resizes the desktop to fit my MacBook screen.
-2) locks the well-known Kali root password.
-3) starts sshd.
+2) starts sshd.
+3) locks the `kali` user's password
+4) disables the screen lock (with no password you'd be locked out)
 
-Additional directores can be added to `persistence.conf` for keeping track of project-related data.
+Additional directores can be added to the persistence volume (and the `persistence.conf` file) for keeping track of project-related data.
 
 ## Tips and tricks
 If you are interested, here are some additional tips and tricks you can use when
